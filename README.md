@@ -18,7 +18,7 @@ A prototype web-based voting application built using **HTML**, **CSS**, and **Ja
 
 | File                | Description                                 |
 |---------------------|---------------------------------------------|
-| `index.html`        | Home page with navigation                   |
+| `index.html`        | Home page or Voters login form              |
 | `vote.html`         | Page where users cast votes                 |
 | `admin_login.html`  | Admin login form                            |
 | `admin.html`        | Admin dashboard to view votes               |
