@@ -1,4 +1,4 @@
-# Online-Voting-System-Using-Blockchain
+# Online-Voting-System-Using-Blockchain-Concept
 
 A prototype web-based voting application built using **HTML**, **CSS**, and **JavaScript**. This project demonstrates a **conceptual blockchain** implementation for secure and transparent vote storage using browser-side logic.
 
