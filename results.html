@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Election Results</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2> 📊 Live Voting Results</h2>
+
+    <!-- Bar chart -->
+    <canvas id="resultChart" width="200" height="150"></canvas>
+
+    <h3> 📄 Voting Ledger</h3>
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Voter ID</th>
+          <th>Timestamp</th>
+          <th>Hash</th>
+          <th>Total Votes</th>
+        </tr>
+      </thead>
+      <tbody id="resultsTable">
+        <!-- Ledger rows will be populated here -->
+      </tbody>
+    </table>
+
+    <br>
+    <button onclick="goHome()">Back to Home</button>
+  </div>
+
+  <script>
+    const secretKey = "secureVote123";
+    const chainData = JSON.parse(localStorage.getItem("blockchain")) || [];
+    const voteCounts = {};
+    const resultsTable = document.getElementById("resultsTable");
+    const ledgerRows = [];
+
+    chainData.forEach((block, index) => {
+      if (index === 0) return; // Skip Genesis block
+
+      try {
+        const decrypted = CryptoJS.AES.decrypt(block.data, secretKey);
+        const voteData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+        const candidate = voteData.candidate;
+
+        // Count votes
+        voteCounts[candidate] = (voteCounts[candidate] || 0) + 1;
+
+        // Prepare ledger row
+        ledgerRows.push({
+          candidate,
+          voterId: voteData.voterId,
+          timestamp: new Date(voteData.timestamp).toLocaleString(),
+          hash: block.hash,
+          totalVotes: voteCounts[candidate]
+        });
+      } catch (err) {
+        console.warn("Decryption failed at block", index, err);
+      }
+    });
+
+    // Display ledger
+    if (ledgerRows.length === 0) {
+      resultsTable.innerHTML = "<tr><td colspan='5'>No votes found.</td></tr>";
+    } else {
+      ledgerRows.forEach(entry => {
+        resultsTable.innerHTML += `
+          <tr>
+            <td>${entry.candidate}</td>
+            <td>${entry.voterId}</td>
+            <td>${entry.timestamp}</td>
+            <td style="font-size: 0.6em; word-break: break-word">${entry.hash.slice(0, 20)}...</td>
+            <td>${entry.totalVotes}</td>
+          </tr>`;
+      });
+    }
+
+    // Bar chart using voteCounts
+    const candidateNames = Object.keys(voteCounts);
+    const voteNumbers = candidateNames.map(name => voteCounts[name]);
+
+    if (candidateNames.length > 0) {
+      new Chart(document.getElementById("resultChart"), {
+        type: "bar",
+        data: {
+          labels: candidateNames,
+          datasets: [{
+            label: "Total Votes",
+            data: voteNumbers,
+            backgroundColor: ["#4caf50", "#2196f3", "#ff9800", "#9c27b0", "#f44336", "#3f51b5"]
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    } else {
+      document.getElementById("resultChart").outerHTML = "<p>No votes cast yet.</p>";
+    }
+
+    function goHome() {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
