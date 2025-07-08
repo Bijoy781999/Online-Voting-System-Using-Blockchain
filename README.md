@@ -67,7 +67,7 @@ A prototype web-based voting application built using **HTML**, **CSS**, and **Ja
 ![Voting Page](Images/Screenshot_Vote.png)
 
 #### 🔐 Admin Login
-![Admin Login](screenshots/admin_login.png)
+![Admin Login](Images/Screenshot_adminlogin.png)
 
 #### 📊 Results Page
 ![Results](screenshots/results.png)
