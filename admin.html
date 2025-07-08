@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Voting Dashboard</h2>
+
+    <h3>📄 Ledger 1: Voter Details</h3>
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Index</th>
+          <th>Voter ID</th>
+          <th>Candidate</th>
+          <th>Timestamp</th>
+          <th>Hash</th>
+        </tr>
+      </thead>
+      <tbody id="voterLedger"></tbody>
+    </table>
+
+    <h3> 📄 Ledger 2: Candidate Summary</h3>
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Total Votes</th>
+          <th>Latest Timestamp</th>
+          <th>Last Vote Hash</th>
+        </tr>
+      </thead>
+      <tbody id="candidateLedger"></tbody>
+    </table>
+
+    <h3>📊 Vote Distribution Chart</h3>
+    <canvas id="voteChart" width="400" height="200"></canvas>
+
+    <br>
+    <button onclick="resetSystem()" style="background: linear-gradient(150deg, rgb(241, 78, 78), rgb(208, 4, 4)); box-shadow: 10px 10px 10px rgb(55, 6, 6);">Reset System</button>
+    <button onclick="logout()" style="background: linear-gradient(150deg, rgb(247, 244, 96), rgb(214, 137, 12)); box-shadow: 10px 10px 10px rgb(123, 78, 4);">Logout</button>
+  </div>
+
+  <script>
+    const secretKey = "secureVote123";
+    const chainData = JSON.parse(localStorage.getItem("blockchain")) || [];
+
+    const voterLedger = document.getElementById("voterLedger");
+    const candidateLedger = document.getElementById("candidateLedger");
+    const voteCounts = {};
+    const candidateMeta = {};
+
+    chainData.forEach((block, index) => {
+      if (index === 0) return;
+
+      try {
+        const decrypted = CryptoJS.AES.decrypt(block.data, secretKey);
+        const voteData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+
+        // Ledger 1: Voter Details
+        voterLedger.innerHTML += `
+          <tr>
+            <td>${index}</td>
+            <td>${voteData.voterId}</td>
+            <td>${voteData.candidate}</td>
+            <td>${new Date(voteData.timestamp).toLocaleString()}</td>
+            <td style="font-size: 0.7em; word-break: break-word">${block.hash.slice(0, 20)}...</td>
+          </tr>
+        `;
+
+        // Ledger 2: Candidate Summary
+        const candidate = voteData.candidate;
+        voteCounts[candidate] = (voteCounts[candidate] || 0) + 1;
+        candidateMeta[candidate] = {
+          timestamp: voteData.timestamp,
+          hash: block.hash
+        };
+      } catch (e) {
+        console.warn("Block decryption failed at index", index, e);
+      }
+    });
+
+    // Populate Ledger 2
+    Object.keys(voteCounts).forEach(candidate => {
+      const { timestamp, hash } = candidateMeta[candidate];
+      candidateLedger.innerHTML += `
+        <tr>
+          <td>${candidate}</td>
+          <td>${voteCounts[candidate]}</td>
+          <td>${new Date(timestamp).toLocaleString()}</td>
+          <td style="font-size: 0.7em; word-break: break-word">${hash.slice(0, 20)}...</td>
+        </tr>
+      `;
+    });
+
+    // Draw Bar Chart
+    const labels = Object.keys(voteCounts);
+    const values = labels.map(name => voteCounts[name]);
+
+    if (labels.length > 0) {
+      new Chart(document.getElementById("voteChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Total Votes",
+            data: values,
+            backgroundColor: ["#4caf50", "#2196f3", "#ff9800", "#e91e63", "#9c27b0"]
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    } else {
+      document.getElementById("voteChart").outerHTML = "<p>No votes recorded yet.</p>";
+    }
+
+    function logout() {
+      window.location.href = "admin_login.html";
+    }
+
+    function resetSystem() {
+      if (confirm("⚠️ This will delete all votes. Are you sure?")) {
+        localStorage.clear();
+        alert("Blockchain reset successfully.");
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
