@@ -1,0 +1,53 @@
+body {
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle, rgba(110, 210, 199, 0.8), rgba(90, 238, 216, 0.8));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.container {
+  background: rgb(238, 237, 237);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 1);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  text-shadow: 2.5px 4px 5.5px rgb(140, 219, 219);
+}
+
+input, button {
+  width: 95%;
+  padding: 10px;
+  margin: 20px 0;
+  border-radius: 10px;
+  box-shadow: 2.5px 5px 10px rgb(0, 0, 0);
+  border: 1px solid #ccc;
+  font-size: 16px;
+  align-items: center;
+}
+
+button {
+  background: linear-gradient(150deg, rgb(130, 247, 233), rgb(8, 187, 172));
+  color: rgb(0, 0, 0);
+  box-shadow: 2.5px 5px 10px rgb(12, 117, 133);
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  box-shadow: 2.5px 5px 10px rgb(2, 47, 37);
+  text-shadow: 2.5px 4px 5.5px rgb(140, 219, 219);
+}
+
+th, td {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
