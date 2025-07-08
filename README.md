@@ -60,14 +60,17 @@ A prototype web-based voting application built using **HTML**, **CSS**, and **Ja
 
 ## 📷 Screenshots
 
-#### 🏠 Home Page
-![Home Page](screenshots/index.png)
+#### 🏠 Veter Login
+![Home Page](Images/Screenshot_index.png)
 
 #### 🗳️ Voting Page
 ![Voting Page](Images/Screenshot_Vote.png)
 
+#### 📊 Results Page
+![Results](screenshots/results.png)
+
 #### 🔐 Admin Login
 ![Admin Login](Images/Screenshot_adminlogin.png)
 
-#### 📊 Results Page
-![Results](screenshots/results.png)
+#### 🏠 🗳️ Admin Panel
+![Admin Panel]()
