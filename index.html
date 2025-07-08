@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blockchain Voting Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Voter Login</h1>
+    <form id="loginForm">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="date" id="dob" required>
+      <input type="text" id="voterId" placeholder="Voter ID" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const dob = document.getElementById("dob").value;
+      const voterId = document.getElementById("voterId").value.trim();
+
+      if (name && dob && voterId) {
+        sessionStorage.setItem("voter", JSON.stringify({ name, dob, voterId }));
+        window.location.href = "vote.html";
+      } else {
+        alert("Please fill all fields.");
+      }
+    });
+  </script>
+</body>
+</html>
