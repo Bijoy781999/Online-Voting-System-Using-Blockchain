@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cast Your Vote</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="blockchain.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2 id="voterInfo"></h2>
+    <form id="voteForm">
+      <p>Select a candidate:</p>
+      <label><input type="radio" name="candidate" value="Alice"> Alice </label><br>
+      <label><input type="radio" name="candidate" value="Bob"> Bob </label><br>
+      <label><input type="radio" name="candidate" value="Clara"> Clara </label><br>
+      <button type="submit">Submit Vote</button>
+    </form>
+    <br>
+        <button onclick="logout()" style="background: linear-gradient(150deg, rgb(247, 244, 96), rgb(214, 137, 12)); box-shadow: 10px 10px 10px rgb(123, 78, 4);">Logout</button>
+  </div>
+
+  <script>
+    const voter = JSON.parse(sessionStorage.getItem("voter"));
+    if (!voter) {
+      alert("No voter data found. Redirecting...");
+      window.location.href = "index.html";
+    }
+
+    document.getElementById("voterInfo").innerText = 
+      `Welcome, ${voter.name} (Voter ID: ${voter.voterId})`;
+
+    const hasVotedKey = `voted_${voter.voterId}`;
+    if (localStorage.getItem(hasVotedKey)) {
+      alert("You have already voted!");
+      window.location.href = "results.html";
+    }
+
+    document.getElementById("voteForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const selected = document.querySelector('input[name="candidate"]:checked');
+      if (!selected) {
+        alert("Please select a candidate.");
+        return;
+      }
+
+      const voteData = {
+        voterId: voter.voterId,
+        candidate: selected.value,
+        timestamp: new Date().toISOString()
+      };
+
+      const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(voteData), "secureVote123").toString();
+
+      VotingBlockchain.addBlock(new Block(
+        VotingBlockchain.chain.length,
+        encryptedData,
+        VotingBlockchain.getLatestBlock().hash
+      ));
+
+      localStorage.setItem("blockchain", JSON.stringify(VotingBlockchain.chain));
+      localStorage.setItem(hasVotedKey, "true");
+
+      alert("✅ Vote submitted successfully!");
+      window.location.href = "results.html";
+    });
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
