@@ -47,6 +47,8 @@ A prototype web-based voting application built using **HTML**, **CSS**, and **Ja
 2. Open `index.html` in your browser.
 > No backend or server setup is required – it runs fully in the browser.
 
+3. Open `admin_login.html` as well in your browser for admin access.
+
 ---
 
 ## 🛠️ Tech Stack
