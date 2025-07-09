@@ -42,7 +42,7 @@ A prototype web-based voting application built using **HTML**, **CSS**, and **Ja
 ## 🚀 Getting Started
 
 1. Clone the repository:
-- git clone https://github.com/Bijoy781999/blockchain-voting-system.git
+- git clone https://github.com/Bijoy781999/Online-Voting-System-Using-Blockchain.git
 
 2. Open `index.html` in your browser.
 > No backend or server setup is required – it runs fully in the browser.
